@@ -1,4 +1,4 @@
-package com.lplus.android;
+package com.lplus.facebook;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;

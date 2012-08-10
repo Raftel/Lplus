@@ -1,4 +1,4 @@
-package com.lplus.android;
+package com.lplus.facebook;
 
 import android.util.Log;
 
