@@ -2,14 +2,10 @@ package com.lplus.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-public class LplusLoginPage extends ImageView implements LplusPage {
 
-	public LplusLoginPage(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
-	}
+public class LplusLoginPage extends LinearLayout implements LplusPage {
 
 	public LplusLoginPage(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -20,5 +16,4 @@ public class LplusLoginPage extends ImageView implements LplusPage {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-
 }
