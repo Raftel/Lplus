@@ -1,19 +1,30 @@
 package com.lplus.widget;
 
+import com.lplus.facebook.R;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 
 public class LplusLoginPage extends LinearLayout implements LplusPage {
+	
+	LplusLoginButton loginBtn;
 
 	public LplusLoginPage(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
+		
+		init();
 	}
 
 	public LplusLoginPage(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
+		
+		init();
+	}
+	
+	public void init() {
+		loginBtn = (LplusLoginButton)findViewById(R.id.lgoinbutton);
+		loginBtn.init();
 	}
 }

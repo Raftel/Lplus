@@ -1,11 +1,15 @@
 package com.lplus.tube;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.lplus.widget.LplusLoginPage;
+
+
+
 public class TubeActivity extends Activity {
+	LplusLoginPage loginPage;
 
 	public static final String APPID = "338804906187760";
 	String[] permissions = new String[] {
@@ -63,7 +67,12 @@ public class TubeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tube);
+
+        // view를 생성 후 사용하는 데 있어서 XML을 직접 사용하는 1번째 방법과 직접 생성자를 호출해서 사용하는 2번째 방법이 있을 수 있다고 판단됨.
+        // concept은 전자, 후자, 양쪽 다 지원할 것인지 결정해야 할 것으로 판단됨.
+        setContentView(R.layout.lplusloginpage);
+        //loginPage = new LplusLoginPage(this);
+        //setContentView(loginPage);
     }
 
     @Override

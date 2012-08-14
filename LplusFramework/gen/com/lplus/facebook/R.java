@@ -14,4 +14,10 @@ public final class R {
         public static int close=0x7f020000;
         public static int facebook_icon=0x7f020001;
     }
+    public static final class id {
+        public static int lgoinbutton=0x7f040000;
+    }
+    public static final class layout {
+        public static int lplusloginpage=0x7f030000;
+    }
 }
