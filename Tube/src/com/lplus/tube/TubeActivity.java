@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.lplus.widget.LplusLoginPage;
+import com.lplus.widget.LplusType;
 
 
 
@@ -67,12 +68,10 @@ public class TubeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // view를 생성 후 사용하는 데 있어서 XML을 직접 사용하는 1번째 방법과 직접 생성자를 호출해서 사용하는 2번째 방법이 있을 수 있다고 판단됨.
-        // concept은 전자, 후자, 양쪽 다 지원할 것인지 결정해야 할 것으로 판단됨.
-        setContentView(R.layout.lplusloginpage);
-        //loginPage = new LplusLoginPage(this);
-        //setContentView(loginPage);
+      
+        loginPage = new LplusLoginPage(this);        
+        loginPage.init(LplusType.LPLUS_TYPE_FACEBOOK);
+        setContentView(loginPage);
     }
 
     @Override

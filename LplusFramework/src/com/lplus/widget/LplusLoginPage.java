@@ -1,30 +1,34 @@
 package com.lplus.widget;
 
-import com.lplus.facebook.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.widget.LinearLayout;
+
+import com.lplus.facebook.R;
 
 
 public class LplusLoginPage extends LinearLayout implements LplusPage {
 	
-	LplusLoginButton loginBtn;
+	LinearLayout		layout;
+	LplusLoginButton 	loginBtn;
 
 	public LplusLoginPage(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
-		init();
 	}
 
 	public LplusLoginPage(Context context) {
 		super(context);
-		
-		init();
 	}
 	
-	public void init() {
+	public void init(LplusType type) {
+		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		layout = (LinearLayout) inflater.inflate(R.layout.lplusloginpage, null);
+		this.addView(layout);
+		this.setGravity(Gravity.CENTER);
+
 		loginBtn = (LplusLoginButton)findViewById(R.id.lgoinbutton);
-		loginBtn.init();
+		loginBtn.init(type);
 	}
 }

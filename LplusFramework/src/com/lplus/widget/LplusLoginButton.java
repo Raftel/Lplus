@@ -10,24 +10,19 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 
 	public LplusLoginButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		
-		init();
 	}
 
 	public LplusLoginButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
-		init();
 	}
 
 	public LplusLoginButton(Context context) {
 		super(context);
-		
-		init();
 	}
 	
-	public void init() {
-		setImageResource(R.drawable.facebook_icon);
+	public void init(LplusType type) {
+		if (type == LplusType.LPLUS_TYPE_FACEBOOK) {
+			setBackgroundResource(R.drawable.facebook_icon);
+		}
 	}
-
 }
