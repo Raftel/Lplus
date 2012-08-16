@@ -11,8 +11,10 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
+import com.lplus.common.LplusFramework;
+import com.lplus.common.LplusFrameworkType;
 
-public class LplusFacebook {
+public class LplusFacebook implements LplusFramework {
 
 	Facebook mfacebook;
 	AsyncFacebookRunner mAsyncRunner;
@@ -74,6 +76,11 @@ public class LplusFacebook {
 		mAsyncRunner.request("me/photos", parameters, "POST", listener, null);
 	}
 
+	@Override
+	public LplusFrameworkType getType() {
+		return LplusFrameworkType.LPLUS_TYPE_FACEBOOK;
+	}
+	
 	public class DefaultDialogListener extends LplusBaseDialogListener { 
 		public void onComplete(Bundle values) {
 		}

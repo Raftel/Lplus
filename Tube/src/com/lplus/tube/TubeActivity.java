@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.lplus.facebook.LplusFacebook;
 import com.lplus.widget.LplusLoginPage;
-import com.lplus.widget.LplusType;
 
 
 
 public class TubeActivity extends Activity {
+	LplusFacebook facebook;
 	LplusLoginPage loginPage;
 
 	public static final String APPID = "338804906187760";
@@ -70,7 +71,7 @@ public class TubeActivity extends Activity {
         super.onCreate(savedInstanceState);
       
         loginPage = new LplusLoginPage(this);        
-        loginPage.init(LplusType.LPLUS_TYPE_FACEBOOK);
+        loginPage.init(facebook);
         setContentView(loginPage);
     }
 

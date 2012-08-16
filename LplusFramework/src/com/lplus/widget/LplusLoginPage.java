@@ -6,13 +6,16 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
+import com.lplus.common.LplusFramework;
+import com.lplus.facebook.LplusFacebook;
 import com.lplus.facebook.R;
 
 
 public class LplusLoginPage extends LinearLayout implements LplusPage {
 	
-	LinearLayout		layout;
-	LplusLoginButton 	loginBtn;
+	LinearLayout		mLayout;
+	LplusLoginButton 	mLoginBtn;
+	LplusFramework		mFramework;
 
 	public LplusLoginPage(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -22,13 +25,19 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		super(context);
 	}
 	
-	public void init(LplusType type) {
+	public void init(LplusFramework framework) {
+		mFramework = framework;
+		
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		layout = (LinearLayout) inflater.inflate(R.layout.lplusloginpage, null);
-		this.addView(layout);
+		mLayout = (LinearLayout) inflater.inflate(R.layout.lplusloginpage, null);
+		this.addView(mLayout);
 		this.setGravity(Gravity.CENTER);
 
-		loginBtn = (LplusLoginButton)findViewById(R.id.lgoinbutton);
-		loginBtn.init(type);
+		mLoginBtn = (LplusLoginButton)findViewById(R.id.lgoinbutton);
+		mLoginBtn.init(mFramework);
+	}
+	
+	private LplusFacebook getFacebook() {
+		return (LplusFacebook)mFramework;
 	}
 }
