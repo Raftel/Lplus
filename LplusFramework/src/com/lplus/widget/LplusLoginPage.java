@@ -26,6 +26,8 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 	}
 	
 	public void init(LplusFramework framework) {
+		this.setBackgroundResource(R.drawable.loginpage_bg);
+		
 		mFramework = framework;
 		
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

@@ -13,6 +13,7 @@ public final class R {
     public static final class drawable {
         public static int close=0x7f020000;
         public static int facebook_icon=0x7f020001;
+        public static int loginpage_bg=0x7f020002;
     }
     public static final class id {
         public static int lgoinbutton=0x7f040000;
