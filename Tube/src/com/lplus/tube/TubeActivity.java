@@ -69,6 +69,8 @@ public class TubeActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        facebook = new LplusFacebook(APPID);
       
         loginPage = new LplusLoginPage(this);        
         loginPage.init(facebook);
