@@ -32,6 +32,8 @@ public class LplusFacebook implements LplusFramework {
 			listener = new DefaultDialogListener();
 		}
 		
+		mMainActivity = activity;
+		
 		mfacebook.authorize(mMainActivity, mPermissions, listener);
 	}
 	
