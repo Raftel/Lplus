@@ -49,6 +49,7 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		
 		for (int i = 0; i < BUTTON_GROUP_ROW; i++) {
 			mTableRow[i] = new TableRow(getContext());
+			mTableRow[i].setGravity(Gravity.CENTER);
 			mLoginButtonGroup.addView(mTableRow[i], new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		}
 		
