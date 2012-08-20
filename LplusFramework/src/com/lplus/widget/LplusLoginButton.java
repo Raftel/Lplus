@@ -29,7 +29,7 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 		mFramework = framework;
 		
 		if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
-			setBackgroundResource(R.drawable.loginbutton_bg3);
+			setBackgroundResource(R.drawable.loginbutton_facebook_bg);
 		}
 				
 		setOnClickListener(new LplusLoginButtonOnClickListener());

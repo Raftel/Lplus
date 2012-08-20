@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
     
-    <com.lplus.widget.LplusLoginButton
-        android:id="@+id/lgoinbutton"
-        android:layout_width="128dip"
-        android:layout_height="128dip"
-    />
+    <com.lplus.widget.LplusButtonGroup
+        android:id="@+id/loginbuttongroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+    >
+    </com.lplus.widget.LplusButtonGroup>
 
 </LinearLayout>
