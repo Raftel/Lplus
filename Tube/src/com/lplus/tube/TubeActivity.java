@@ -72,8 +72,12 @@ public class TubeActivity extends Activity {
         
         facebook = new LplusFacebook(APPID);
       
+        int numButtons = 5;
         loginPage = new LplusLoginPage(this);        
-        loginPage.init(facebook);
+        loginPage.init(numButtons);
+        for (int i = 0; i < numButtons; i++) {
+        	loginPage.addLoginButton(facebook);
+        }
         setContentView(loginPage);
     }
 
