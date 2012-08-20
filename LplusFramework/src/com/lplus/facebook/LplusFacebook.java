@@ -19,18 +19,20 @@ public class LplusFacebook implements LplusFramework {
 	Facebook mfacebook;
 	AsyncFacebookRunner mAsyncRunner;
 	Activity mMainActivity;
+	String[] mPermissions;
 	
-	public LplusFacebook(String appID) {
+	public LplusFacebook(String appID, String[] permissions) {
 		mfacebook = new Facebook(appID);
 		mAsyncRunner = new AsyncFacebookRunner(mfacebook);
+		mPermissions = permissions;
 	}
 	
-	public void login(Activity activity, String[] permissions, DialogListener listener) {
+	public void login(Activity activity, DialogListener listener) {
 		if (listener == null) {
 			listener = new DefaultDialogListener();
 		}
 		
-		mfacebook.authorize(mMainActivity, permissions, listener);
+		mfacebook.authorize(mMainActivity, mPermissions, listener);
 	}
 	
 	public void logout(RequestListener listener) {

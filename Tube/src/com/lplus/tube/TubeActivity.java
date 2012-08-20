@@ -1,6 +1,7 @@
 package com.lplus.tube;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 
@@ -70,7 +71,7 @@ public class TubeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        facebook = new LplusFacebook(APPID);
+        facebook = new LplusFacebook(APPID, permissions);
       
         int numButtons = 1;
         loginPage = new LplusLoginPage(this);        
@@ -86,6 +87,10 @@ public class TubeActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_tube, menu);
         return true;
     }
-
     
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        facebook.authorizeCallback(requestCode, resultCode, data);
+	}    
 }
