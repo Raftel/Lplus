@@ -13,13 +13,14 @@ public final class R {
     public static final class drawable {
         public static int close=0x7f020000;
         public static int facebook_icon=0x7f020001;
-        public static int loginbutton_bg1=0x7f020002;
-        public static int loginbutton_bg2=0x7f020003;
-        public static int loginbutton_facebook_bg=0x7f020004;
-        public static int loginpage_bg_green=0x7f020005;
-        public static int loginpage_bg_red=0x7f020006;
-        public static int loginpage_bg_yellow=0x7f020007;
-        public static int loginpage_default_profile=0x7f020008;
+        public static int loginbutton_bg2=0x7f020002;
+        public static int loginbutton_facebook_bg=0x7f020003;
+        public static int loginbutton_facebook_bg_login=0x7f020004;
+        public static int loginbutton_facebook_bg_logout=0x7f020005;
+        public static int loginpage_bg_green=0x7f020006;
+        public static int loginpage_bg_red=0x7f020007;
+        public static int loginpage_bg_yellow=0x7f020008;
+        public static int loginpage_default_profile=0x7f020009;
     }
     public static final class id {
         public static int loginbuttongroup=0x7f040001;

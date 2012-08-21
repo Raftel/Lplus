@@ -37,7 +37,7 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 	}
 	
 	public void init(int numButtons) {
-		this.setBackgroundResource(R.drawable.loginpage_bg_green);
+		this.setBackgroundResource(R.drawable.loginpage_bg_yellow);
 
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mLayout = (LinearLayout) inflater.inflate(R.layout.lplusloginpage, null);

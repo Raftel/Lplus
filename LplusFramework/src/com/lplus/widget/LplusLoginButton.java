@@ -33,7 +33,7 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 		mFramework = framework;
 		
 		if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
-			setBackgroundResource(R.drawable.loginbutton_facebook_bg);
+			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logout);
 		} else {
 			
 		}
@@ -66,13 +66,13 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 	
 	private final class FacebookLoginDialogListener extends LplusBaseDialogListener {
 		public void onComplete(Bundle values) {
-			setBackgroundResource(R.drawable.loginbutton_facebook_bg);
+			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logoin);
 		}
 	}
 	
 	private final class FacebookLogoutRequestListener extends LplusBaseRequestListener {
 		public void onComplete(String response, Object state) {
-			setBackgroundResource(R.drawable.loginbutton_facebook_bg);	
+			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logout);	
 		}
 	}
 }

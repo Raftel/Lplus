@@ -20,13 +20,14 @@ public final class R {
         public static final int facebook_icon=0x7f020001;
         public static final int ic_action_search=0x7f020002;
         public static final int ic_launcher=0x7f020003;
-        public static final int loginbutton_bg1=0x7f020004;
-        public static final int loginbutton_bg2=0x7f020005;
-        public static final int loginbutton_facebook_bg=0x7f020006;
-        public static final int loginpage_bg_green=0x7f020007;
-        public static final int loginpage_bg_red=0x7f020008;
-        public static final int loginpage_bg_yellow=0x7f020009;
-        public static final int loginpage_default_profile=0x7f02000a;
+        public static final int loginbutton_bg2=0x7f020004;
+        public static final int loginbutton_facebook_bg=0x7f020005;
+        public static final int loginbutton_facebook_bg_login=0x7f020006;
+        public static final int loginbutton_facebook_bg_logout=0x7f020007;
+        public static final int loginpage_bg_green=0x7f020008;
+        public static final int loginpage_bg_red=0x7f020009;
+        public static final int loginpage_bg_yellow=0x7f02000a;
+        public static final int loginpage_default_profile=0x7f02000b;
     }
     public static final class id {
         public static final int loginbuttongroup=0x7f080001;
