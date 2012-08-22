@@ -9,7 +9,7 @@
         android:layout_width="128dip"
         android:layout_height="128dip" 
         android:layout_marginBottom="64dip"
-        android:src="@drawable/loginpage_default_profile"/>"
+        android:src="@drawable/loginpage_default_profile2"/>"
     
     <com.lplus.widget.LplusButtonGroup
         android:id="@+id/loginbuttongroup"

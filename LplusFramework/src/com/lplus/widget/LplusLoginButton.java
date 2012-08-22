@@ -66,7 +66,7 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 	
 	private final class FacebookLoginDialogListener extends LplusBaseDialogListener {
 		public void onComplete(Bundle values) {
-			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logoin);
+			setBackgroundResource(R.drawable.loginbutton_facebook_bg_login);
 		}
 	}
 	
