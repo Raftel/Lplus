@@ -31,7 +31,8 @@ public final class R {
         public static final int loginpage_bg_yellow=0x7f02000c;
         public static final int loginpage_default_profile=0x7f02000d;
         public static final int loginpage_default_profile2=0x7f02000e;
-        public static final int loginpage_profile_bg=0x7f02000f;
+        public static final int loginpage_default_profile3=0x7f02000f;
+        public static final int loginpage_profile_bg=0x7f020010;
     }
     public static final class id {
         public static final int loginbuttongroup=0x7f080001;

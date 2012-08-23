@@ -1,6 +1,9 @@
 package com.lplus.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -73,4 +76,21 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		
 		mAddedButtons++;
 	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		
+		Paint pnt = new Paint();
+		String str = "Tube";
+		
+		pnt.setTextSize(150);
+		pnt.setTextAlign(Paint.Align.CENTER);
+		pnt.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+		canvas.drawText(str, canvas.getWidth() / 2, mLayout.getTop() - 64, pnt);
+		
+		
+	}
+	
+	
 }
