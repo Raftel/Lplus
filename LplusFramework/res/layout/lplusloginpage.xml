@@ -6,10 +6,11 @@
     
     <ImageView 
         android:id="@+id/loginprofile"
-        android:layout_width="160dip"
-        android:layout_height="160dip" 
+        android:layout_width="144dip"
+        android:layout_height="144dip" 
         android:layout_marginBottom="32dip"
-        android:src="@drawable/loginpage_default_profile3"/>"
+        android:background="@drawable/loginpage_profile_frame"
+        />"
     
     <com.lplus.widget.LplusButtonGroup
         android:id="@+id/loginbuttongroup"
