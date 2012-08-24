@@ -24,13 +24,9 @@ public final class R {
         public static int loginpage_bg_yellow=0x7f02000a;
         public static int loginpage_default_profile=0x7f02000b;
         public static int loginpage_default_profile2=0x7f02000c;
-        public static int loginpage_default_profile3=0x7f02000d;
-        public static int loginpage_default_profile4=0x7f02000e;
-        public static int loginpage_profile_bg=0x7f02000f;
-        public static int loginpage_profile_frame=0x7f020010;
-        public static int loginpage_profile_mask=0x7f020011;
-        public static int loginpage_profile_mask2=0x7f020012;
-        public static int loginpage_test_profile=0x7f020013;
+        public static int loginpage_profile_frame=0x7f02000d;
+        public static int loginpage_profile_mask=0x7f02000e;
+        public static int loginpage_test_profile=0x7f02000f;
     }
     public static final class id {
         public static int loginbuttongroup=0x7f040001;

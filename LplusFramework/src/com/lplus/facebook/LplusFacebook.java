@@ -1,19 +1,23 @@
 package com.lplus.facebook;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.URL;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.FacebookError;
+import com.facebook.android.Util;
 import com.lplus.common.LplusFramework;
 import com.lplus.common.LplusFrameworkType;
 
@@ -83,17 +87,25 @@ public class LplusFacebook implements LplusFramework {
 		mAsyncRunner.request("me/photos", parameters, "POST", listener, null);
 	}
 	
-	public Bitmap getUserProfilePic(String Id) {
-		String imageURL;
+	public Bitmap getUserProfilePic(String Id, RequestListener listener) {
+		 
 	    Bitmap pic = null;
+		Log.e("Lplus", "lpf getUserProfilePic");
 	    
-	    imageURL = "http://graph.facebook.com/" + Id + "/picture?type=large";
-	    
-	    try {
-	    	pic = BitmapFactory.decodeStream((InputStream)new URL(imageURL).getContent());
+		mAsyncRunner.request("me/picture", listener);
+	   /* try {
+	    	URL imageURL = new URL("http://graph.facebook.com/" + Id + "/picture?type=large");
+	    	pic = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+	    	
+	    	if (pic == null) {
+	    		Log.e("Lplus", "lpf error pic is null");
+	    	} else {
+	    		Log.e("Lplus", "lpf error pic is OK");
+	    	}
 	    } catch (Exception e) {
 	        e.printStackTrace();
-	    }
+	        Log.e("Lplus", "lpf error" + e.getMessage() + e.getLocalizedMessage() + e.toString());
+	    }*/
 	    
 	    return pic;
 	}
@@ -113,4 +125,29 @@ public class LplusFacebook implements LplusFramework {
 			
 		}
 	}
+	
+	/*private class TestRequestListener extends LplusBaseRequestListener {
+		public void onComplete(String response, Object state) {
+			try {
+				JSONObject json = Util.parseJson(response);
+				final JSONArray friends = json.getJSONArray("data");
+				
+				String friendId, friendName;
+                JSONObject friend;
+                for (int i = 0; i < friends.length(); i++) {
+                    friend = friends.getJSONObject(i);
+                    friendId = friend.getString("id");
+                    friendName = friend.getString("pic_square");
+                    Log.e("gooson", "friend : (id/name) " + friendId + "/" + friendName);
+                }
+                
+			} catch (FacebookError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}*/
 }
