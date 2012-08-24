@@ -1,10 +1,13 @@
 package com.lplus.facebook;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.facebook.android.AsyncFacebookRunner;
@@ -78,6 +81,21 @@ public class LplusFacebook implements LplusFramework {
 		
 		
 		mAsyncRunner.request("me/photos", parameters, "POST", listener, null);
+	}
+	
+	public Bitmap getUserProfilePic(String Id) {
+		String imageURL;
+	    Bitmap pic = null;
+	    
+	    imageURL = "http://graph.facebook.com/" + Id + "/picture?type=large";
+	    
+	    try {
+	    	pic = BitmapFactory.decodeStream((InputStream)new URL(imageURL).getContent());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return pic;
 	}
 
 	@Override
