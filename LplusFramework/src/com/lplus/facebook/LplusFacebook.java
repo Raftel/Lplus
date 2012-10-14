@@ -2,10 +2,6 @@ package com.lplus.facebook;
 
 import java.io.ByteArrayOutputStream;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,8 +12,6 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook;
 import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
 import com.lplus.common.LplusFramework;
 import com.lplus.common.LplusFrameworkType;
 
@@ -110,7 +104,6 @@ public class LplusFacebook implements LplusFramework {
 	    return pic;
 	}
 
-	@Override
 	public LplusFrameworkType getType() {
 		return LplusFrameworkType.LPLUS_TYPE_FACEBOOK;
 	}
