@@ -17,7 +17,7 @@ public class LplusAnimationManager {
     }
 
     public void doAnimations() {
-	if (!hasAnimation()){
+	if (!hasAnimation()) {
 	    return;
 	}
 
@@ -37,23 +37,6 @@ public class LplusAnimationManager {
 
     public boolean hasAnimation() {
 	return mAnims.size() > 0 ? true : false;
-    }
-
-    public void cancelAnimation(LplusAnimation anim) {
-	mAnims.remove(anim);
-	anim = null;
-    }
-
-    public void stopAnimations() {
-	for (int i = 0; i < mAnims.size(); i++) {
-	    mAnims.get(i).stop();
-	}
-    }
-
-    public void resumeAnimations() {
-	for (int i = 0; i < mAnims.size(); i++) {
-	    mAnims.get(i).resume();
-	}
     }
 
 }

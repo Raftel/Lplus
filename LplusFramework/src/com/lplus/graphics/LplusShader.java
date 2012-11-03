@@ -3,26 +3,28 @@ package com.lplus.graphics;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
-public class LplusGLShader {
+public class LplusShader {
     private int mProgram;
     private int mVertexShader;
     private int mFragemenShader;
 
+    private int mColorHandle;
     private int mPositionHandle;
     private int mTextureHandle;
     private int mMVPMatrixHandle;
 
-    public LplusGLShader(String vShaderCode, String fShaderCode) {
+    public LplusShader(String vShaderCode, String fShaderCode) {
 	loadShader(vShaderCode, fShaderCode);
     }
 
     public void loadShader(String vShaderCode, String fShaderCode) {
 	mProgram = GLES20.glCreateProgram();
-	mVertexShader = LplusGLUtil.loadShader(GLES20.GL_VERTEX_SHADER, vShaderCode);
-	mFragemenShader = LplusGLUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, fShaderCode);
+	mVertexShader = LplusUtil.loadShader(GLES20.GL_VERTEX_SHADER, vShaderCode);
+	mFragemenShader = LplusUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, fShaderCode);
 
 	GLES20.glAttachShader(mProgram, mVertexShader);
 	GLES20.glAttachShader(mProgram, mFragemenShader);
@@ -43,11 +45,11 @@ public class LplusGLShader {
 
 	// uniforms
 	mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+	mColorHandle = GLES20.glGetUniformLocation(mProgram, "uColor");
     }
 
     public void useProgram() {
 	GLES20.glUseProgram(mProgram);
-
 	GLES20.glEnableVertexAttribArray(mPositionHandle);
 	GLES20.glEnableVertexAttribArray(mTextureHandle);
     }
@@ -57,39 +59,37 @@ public class LplusGLShader {
 	GLES20.glDisableVertexAttribArray(mTextureHandle);
     }
 
-    public void updateMesh(LplusGLMesh mesh) {
+    public void updateMesh(LplusMesh mesh) {
 	FloatBuffer buffer = mesh.getVertexBuffer();
 	buffer.position(0);
 
-	GLES20.glVertexAttribPointer(
-		mPositionHandle, 
-		3, 
-		GLES20.GL_FLOAT, 
-		false,
-		mesh.getVertexStride() * 4, 
-		buffer);
-    }
+	GLES20.glVertexAttribPointer(mPositionHandle, 3, GLES20.GL_FLOAT, false, mesh.getVertexStride() * 4, buffer);
 
-    public void updateMaterial(LplusGLMesh mesh) {
-	GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-	GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mesh.getTexture());
-
-	FloatBuffer buffer = mesh.getVertexBuffer();
 	buffer.position(3);
-	
-	GLES20.glVertexAttribPointer(
-		mTextureHandle, 
-		2, 
-		GLES20.GL_FLOAT, 
-		false, 
-		mesh.getVertexStride() * 4,
-		buffer); 
+	GLES20.glVertexAttribPointer(mTextureHandle, 2, GLES20.GL_FLOAT, false, mesh.getVertexStride() * 4, buffer);
     }
 
-    public void updateMatrix(float[] mMatrix, float[] vMatrix, float[] pMatrix) {
+    public void updateMaterial(LplusMaterial material) {
+	GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+	if (LplusContextGLES.USING_TEXTURE_ATLAS) {
+	    if (material != null && material.getAtlasTexture() != null)
+		material.getAtlasTexture().bind();
+	} else {
+	    GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, material.getTexture());
+	}
+
+	// headnum : Handling color
+	float r = (float) Color.red(material.getColor()) / 255f;
+	float g = (float) Color.green(material.getColor()) / 255f;
+	float b = (float) Color.blue(material.getColor()) / 255f;
+	float a = (float) Color.alpha(material.getColor()) / 255f;
+
+	GLES20.glUniform4f(mColorHandle, r, g, b, a);
+    }
+
+    public void updateMatrix(float[] mMatrix, float[] vpMatrix) {
 	float[] mvpMatrix = new float[16];
-	Matrix.multiplyMM(mvpMatrix, 0, vMatrix, 0, mMatrix, 0);
-	Matrix.multiplyMM(mvpMatrix, 0, pMatrix, 0, mvpMatrix, 0);
+	Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mMatrix, 0);
 
 	updateMatrix(mvpMatrix);
     }

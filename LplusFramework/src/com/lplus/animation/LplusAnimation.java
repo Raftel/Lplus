@@ -3,28 +3,33 @@ package com.lplus.animation;
 import java.util.ArrayList;
 
 public class LplusAnimation {
-    public static final int STOPPED = 0;
-    public static final int RUNNING = 1;
-    public static final int FINISHED = 2;
+    public static final int STATE_STOPPED = 0;
+    public static final int STATE_RUNNING = 1;
+    public static final int STATE_FINISHED = 2;
 
     public static final int FUNC_LINEAR = 0;
     public static final int FUNC_EASE_IN = 1;
     public static final int FUNC_EASE_OUT = 2;
+    public static final int FUNC_EASE_IN_OUT = 3;
+    public static final int FUNC_EASE_BOUNCE_OUT = 4;
+
+    public static final int ENDTYPE_STAY_VALUE = 0;
+    public static final int ENDTYPE_START_VALUE = 1;
+    public static final int ENDTYPE_END_VALUE = 2;
 
     private LplusAnimationCallback mCallback = null;
     private LplusAnimation mNextAnimation = null;
     private ArrayList<LplusAnimationProp> mPropList = null;
 
-    private int mStatus = STOPPED;
+    private int mStatus = STATE_STOPPED;
     private int mEaseFunc = FUNC_LINEAR;
     private long mDelay = 0;
     private long mDuration = 0;
     private long mStartTime = 0;
     private long mEndTime = 0;
-    private long mStopedTime = 0;
 
     public LplusAnimation(long delay, long duration, int interpolationType) {
-	mStatus = STOPPED;
+	mStatus = STATE_STOPPED;
 	mDelay = delay;
 	mDuration = duration;
 	mEaseFunc = interpolationType;
@@ -32,11 +37,11 @@ public class LplusAnimation {
     }
 
     public boolean isRunning() {
-	return (mStatus == RUNNING);
+	return (mStatus == STATE_RUNNING);
     }
 
     public boolean isFinished() {
-	return (mStatus == FINISHED);
+	return (mStatus == STATE_FINISHED);
     }
 
     public void setCallback(LplusAnimationCallback callback) {
@@ -45,7 +50,7 @@ public class LplusAnimation {
 
     public void start() {
 
-	if (mStatus == RUNNING)
+	if (mStatus == STATE_RUNNING)
 	    return;
 
 	if (mCallback != null)
@@ -54,49 +59,31 @@ public class LplusAnimation {
 	mStartTime = System.currentTimeMillis() + mDelay;
 	mEndTime = mStartTime + mDuration;
 
-	mStatus = RUNNING;
+	mStatus = STATE_RUNNING;
     }
 
-    public void stop() {
+    public void cancel(int endType) {
 
-	if (mStatus != RUNNING)
+	if (mStatus == STATE_FINISHED)
 	    return;
 
-	if (mCallback != null)
-	    mCallback.onStop();
-
-	mStopedTime = System.currentTimeMillis();
-
-	mStatus = STOPPED;
-    }
-
-    public void resume() {
-
-	if (mStatus != STOPPED)
-	    return;
-
-	if (mCallback != null)
-	    mCallback.onResume();
-
-	mStartTime = System.currentTimeMillis() - mStopedTime + mStartTime;
-	mEndTime = mStartTime + mDuration;
-
-	mStatus = RUNNING;
-    }
-
-    public void finish() {
-
-	if (mStatus == FINISHED)
-	    return;
-
-	for (int i = 0; i < mPropList.size(); i++) {
-	    mPropList.get(i).progress(1.0f);
+	switch (endType) {
+	case ENDTYPE_STAY_VALUE:
+	    break;
+	case ENDTYPE_START_VALUE:
+	    for (int i = 0; i < mPropList.size(); i++)
+		mPropList.get(i).progress(0.0f);
+	    break;
+	case ENDTYPE_END_VALUE:
+	    for (int i = 0; i < mPropList.size(); i++)
+		mPropList.get(i).progress(1.0f);
+	    break;
 	}
 
 	if (mCallback != null)
-	    mCallback.onFinish();
+	    mCallback.onEnd(endType);
 
-	mStatus = FINISHED;
+	mStatus = STATE_FINISHED;
 	if (mNextAnimation != null)
 	    mNextAnimation.start();
     }
@@ -110,7 +97,7 @@ public class LplusAnimation {
     }
 
     private float animate(long time) {
-	float value = (float) (time - mStartTime) / (float) mDuration;
+	float t = (float) (time - mStartTime) / (float) mDuration;
 
 	if (time < mStartTime)
 	    return 0.0f;
@@ -119,11 +106,29 @@ public class LplusAnimation {
 
 	switch (mEaseFunc) {
 	case FUNC_LINEAR:
-	    return value;
+	    return t;
 	case FUNC_EASE_IN:
-	    return (float) Math.pow(value, 3.0f);
+	    return (float) Math.pow(t, 3.0f);
 	case FUNC_EASE_OUT:
-	    return -(float) Math.pow(0.01, value) + 1.01f;
+	    return (float) Math.pow((t - 1), 3.0f) + 1.0f;
+	case FUNC_EASE_IN_OUT:
+	    if (t < 0.5f)
+		return (float) Math.pow(t, 3.0f);
+	    else
+		return (float) Math.pow((t - 1), 3.0f) + 1.0f;
+	case FUNC_EASE_BOUNCE_OUT:
+	    if (t < 1.0f / 2.75f) {
+		return 7.5625f * t * t;
+	    } else if (t < 2.0f / 2.75f) {
+		t -= 1.5f / 2.75f;
+		return 7.5625f * t * t + 0.75f;
+	    } else if (t < 2.5f / 2.75f) {
+		t -= 2.25f / 2.75f;
+		return 7.5625f * t * t + 0.9375f;
+	    } else {
+		t -= 2.625f / 2.75f;
+		return 7.5625f * t * t + 0.984375f;
+	    }
 	default:
 	    break;
 	}
@@ -132,10 +137,10 @@ public class LplusAnimation {
     }
 
     public void doAnimation(long now) {
-	if (mStatus == RUNNING && now > mStartTime) {
+	if (mStatus == STATE_RUNNING && now > mStartTime) {
 
 	    if (now > mEndTime) {
-		finish();
+		cancel(ENDTYPE_END_VALUE);
 	    } else {
 		float value = animate(now);
 		for (int i = 0; i < mPropList.size(); i++) {
