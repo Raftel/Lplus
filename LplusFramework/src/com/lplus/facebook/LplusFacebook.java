@@ -12,10 +12,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.facebook.android.AsyncFacebookRunner;
-import com.facebook.android.AsyncFacebookRunner.RequestListener;
-import com.facebook.android.Facebook;
-import com.facebook.android.Facebook.DialogListener;
+import com.facebook.android.old.AsyncFacebookRunner;
+import com.facebook.android.old.Facebook;
+import com.facebook.android.old.AsyncFacebookRunner.RequestListener;
+import com.facebook.android.old.Facebook.DialogListener;
 import com.lplus.common.LplusFramework;
 import com.lplus.common.LplusFrameworkType;
 

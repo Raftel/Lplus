@@ -5,8 +5,8 @@ import java.net.MalformedURLException;
 
 import android.util.Log;
 
-import com.facebook.android.AsyncFacebookRunner.RequestListener;
-import com.facebook.android.FacebookError;
+import com.facebook.android.old.FacebookError;
+import com.facebook.android.old.AsyncFacebookRunner.RequestListener;
 
 public abstract class LplusBaseRequestListener implements RequestListener {
 

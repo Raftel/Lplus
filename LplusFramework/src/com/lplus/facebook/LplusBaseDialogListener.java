@@ -2,9 +2,9 @@ package com.lplus.facebook;
 
 import android.util.Log;
 
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook.DialogListener;
-import com.facebook.android.FacebookError;
+import com.facebook.android.old.DialogError;
+import com.facebook.android.old.FacebookError;
+import com.facebook.android.old.Facebook.DialogListener;
 
 
 public abstract class LplusBaseDialogListener implements DialogListener {

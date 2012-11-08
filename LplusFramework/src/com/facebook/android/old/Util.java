@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.facebook.android;
+package com.facebook.android.old;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

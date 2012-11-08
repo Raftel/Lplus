@@ -10,9 +10,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.facebook.android.DialogError;
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
+import com.facebook.android.old.DialogError;
+import com.facebook.android.old.FacebookError;
+import com.facebook.android.old.Util;
 import com.lplus.animation.LplusAnimation;
 import com.lplus.animation.LplusAnimationManager;
 import com.lplus.animation.LplusAnimationProp;
