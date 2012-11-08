@@ -4,39 +4,49 @@ import java.util.Vector;
 
 public class LplusAnimationManager {
 
-    private Vector<LplusAnimation> mAnims = new Vector<LplusAnimation>();
+    private static LplusAnimationManager mManager;
+	private Vector<LplusAnimation> mAnims = new Vector<LplusAnimation>();
 
-    public LplusAnimationManager() {
+    public static LplusAnimationManager getInstance() {
+    	if (mManager == null)
+    		mManager = new LplusAnimationManager();
+    		
+    	return mManager;
     }
-
-    public LplusAnimation createAnimation(long delay, long duration, int interpolationType) {
-	LplusAnimation newAnimation = new LplusAnimation(delay, duration, interpolationType);
-	mAnims.add(newAnimation);
-
-	return newAnimation;
-    }
-
-    public void doAnimations() {
-	if (!hasAnimation()) {
-	    return;
+    
+	private LplusAnimationManager() {
 	}
 
-	long now = System.currentTimeMillis();
+	public LplusAnimation createAnimation(long delay, long duration,
+			int interpolationType) {
+		LplusAnimation newAnimation = new LplusAnimation(delay, duration,
+				interpolationType);
+		mAnims.add(newAnimation);
 
-	for (int i = 0; i < mAnims.size();) {
-	    if (mAnims.get(i).isRunning())
-		mAnims.get(i).doAnimation(now);
-
-	    if (mAnims.get(i).isFinished()) {
-		mAnims.remove(i);
-	    } else {
-		i++;
-	    }
+		return newAnimation;
 	}
-    }
 
-    public boolean hasAnimation() {
-	return mAnims.size() > 0 ? true : false;
-    }
+	public void doAnimations() {
+		if (!hasAnimation()) {
+			return;
+		}
+
+		long now = System.currentTimeMillis();
+
+		for (int i = 0; i < mAnims.size();) {
+			if (mAnims.get(i).isRunning())
+				mAnims.get(i).doAnimation(now);
+
+			if (mAnims.get(i).isFinished()) {
+				mAnims.remove(i);
+			} else {
+				i++;
+			}
+		}
+	}
+
+	public boolean hasAnimation() {
+		return mAnims.size() > 0 ? true : false;
+	}
 
 }

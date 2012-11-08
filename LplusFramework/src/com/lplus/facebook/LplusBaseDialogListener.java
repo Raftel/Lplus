@@ -15,7 +15,7 @@ public abstract class LplusBaseDialogListener implements DialogListener {
     }
 
     public void onError(DialogError e) {
-    	Log.e("Lplus", "error" + e.getMessage());
+    	Log.e("Lplus", "error " + e.getMessage());
         e.printStackTrace();        
     }
 

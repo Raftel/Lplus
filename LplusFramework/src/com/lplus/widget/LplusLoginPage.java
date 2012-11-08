@@ -1,9 +1,5 @@
 package com.lplus.widget;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,18 +13,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-import com.facebook.android.FacebookError;
-import com.facebook.android.Util;
+import com.lplus.animation.LplusAnimationUtil;
 import com.lplus.common.LplusFramework;
 import com.lplus.common.LplusUtil;
-import com.lplus.facebook.LplusBaseRequestListener;
+import com.lplus.facebook.LplusFacebook.BitmapAsyncTaskListener;
 import com.lplus.facebook.R;
-import com.lplus.widget.LplusLoginButton.LoginCompleteListener;
 
 
 public class LplusLoginPage extends LinearLayout implements LplusPage {
@@ -48,8 +41,11 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 	LoginButtonListener			mLoginBtnListener[];
 	int 						mNumButtons = 0;
 	int							mAddedButtons = 0;
+	
+	Bitmap mMaskBitmap;
+	Bitmap mDefaultProfile;
 
-	public LplusLoginPage(Context context, AttributeSet attrs) {
+	private LplusLoginPage(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
@@ -78,6 +74,9 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		mNumButtons = LplusUtil.getMin(numButtons, BUTTON_MAX_NUM);
 		mLoginBtn = new LplusLoginButton[mNumButtons];
 		mLoginBtnListener = new LoginButtonListener[mNumButtons];
+		mMaskBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.loginpage_profile_mask);
+		mDefaultProfile = BitmapFactory.decodeResource(getResources(),R.drawable.loginpage_default_profile);
+		setProfilePic(mDefaultProfile);
 	}
 	
 	public void addLoginButton(LplusFramework framework) {
@@ -98,10 +97,15 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		mAddedButtons++;
 	}
 
+
+	static float dir = 1.0f;
+	static float rotationX = 0.0f;
+	static float scaleX = 0.0f;
+	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		
+		super.onDraw(canvas);		
+			
 		Paint pnt = new Paint();
 		String str = "Tube";
 		
@@ -109,19 +113,18 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		pnt.setTextAlign(Paint.Align.CENTER);
 		pnt.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
 		canvas.drawText(str, canvas.getWidth() / 2, mLayout.getTop() - 64, pnt);
+		
+		invalidate();
 	}
 	
 	public void setProfilePic(Bitmap pic) {
 		if (pic == null) {
-			Log.e("Lplus", "setProfilePic, error pic is null");
-			return;
+			pic = mDefaultProfile;
 		}
 		
-		pic = BitmapFactory.decodeResource(getResources(),R.drawable.loginpage_test_profile);
-		Bitmap mask = BitmapFactory.decodeResource(getResources(),R.drawable.loginpage_profile_mask);
-		Bitmap scaledMask = Bitmap.createScaledBitmap(mask, pic.getWidth(), pic.getHeight(), true);
+		Bitmap scaledMask = Bitmap.createScaledBitmap(mMaskBitmap, pic.getWidth(), pic.getHeight(), true);
 		
-		Bitmap result = Bitmap.createBitmap(pic .getWidth(), pic .getHeight(), Bitmap.Config.ARGB_8888);
+		Bitmap result = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(result);
         canvas.drawBitmap(pic, 0, 0, null); 
 		
@@ -131,11 +134,11 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
         canvas.drawBitmap(scaledMask, 0, 0, paint2); 
       
         mProfile.setImageBitmap(result);
-        mProfile.setScaleType(ScaleType.CENTER_INSIDE);
 	}
 	
-	public final class LoginButtonListener implements LoginCompleteListener {
+	public final class LoginButtonListener implements BitmapAsyncTaskListener {
 		public void onComplete(Bitmap pic) {
+			LplusAnimationUtil.spin(mProfile);
 			setProfilePic(pic);
 		}
 	}

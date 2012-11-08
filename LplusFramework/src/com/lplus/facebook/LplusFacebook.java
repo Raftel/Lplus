@@ -1,12 +1,16 @@
 package com.lplus.facebook;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -33,8 +37,7 @@ public class LplusFacebook implements LplusFramework {
 			listener = new DefaultDialogListener();
 		}
 		
-		mMainActivity = activity;
-		
+		mMainActivity = activity;		
 		mfacebook.authorize(mMainActivity, mPermissions, listener);
 	}
 	
@@ -81,31 +84,51 @@ public class LplusFacebook implements LplusFramework {
 		mAsyncRunner.request("me/photos", parameters, "POST", listener, null);
 	}
 	
-	public Bitmap getUserProfilePic(String Id, RequestListener listener) {
-		 
-	    Bitmap pic = null;
-		Log.e("Lplus", "lpf getUserProfilePic");
-	    
-		mAsyncRunner.request("me/picture", listener);
-	   /* try {
-	    	URL imageURL = new URL("http://graph.facebook.com/" + Id + "/picture?type=large");
-	    	pic = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-	    	
-	    	if (pic == null) {
-	    		Log.e("Lplus", "lpf error pic is null");
-	    	} else {
-	    		Log.e("Lplus", "lpf error pic is OK");
-	    	}
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        Log.e("Lplus", "lpf error" + e.getMessage() + e.getLocalizedMessage() + e.toString());
-	    }*/
-	    
-	    return pic;
+	public void getUserInfo(String Id, RequestListener listener) {
+		mAsyncRunner.request(Id, listener);
+	}
+	
+	public void getUserProfilePic(String Id, final BitmapAsyncTaskListener listener) {
+		
+		if (listener == null)
+			return;
+		
+		AsyncTask<URL, Void, Bitmap> asyncTask = new AsyncTask<URL, Void, Bitmap>() {
+			@Override
+			protected Bitmap doInBackground(URL... arg0) {
+				try {
+					URL pictureUrl = arg0[0];
+					return BitmapFactory.decodeStream(pictureUrl.openConnection().getInputStream());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Bitmap result) {
+				if (isCancelled())
+					result = null;
+				
+				if (listener != null)
+					listener.onComplete(result);
+			}
+		};
+		
+		try {
+			asyncTask.execute(new URL("http://graph.facebook.com/" + Id + "/picture?type=large"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public LplusFrameworkType getType() {
 		return LplusFrameworkType.LPLUS_TYPE_FACEBOOK;
+	}
+	
+	public interface BitmapAsyncTaskListener {
+		public void onComplete(Bitmap bitmap);
 	}
 	
 	public class DefaultDialogListener extends LplusBaseDialogListener { 

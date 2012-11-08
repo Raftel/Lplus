@@ -1,136 +1,149 @@
 package com.lplus.widget;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.apache.http.util.ByteArrayBuffer;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.facebook.android.DialogError;
+import com.facebook.android.FacebookError;
+import com.facebook.android.Util;
+import com.lplus.animation.LplusAnimation;
+import com.lplus.animation.LplusAnimationManager;
+import com.lplus.animation.LplusAnimationProp;
+import com.lplus.animation.LplusAnimationUtil;
 import com.lplus.common.LplusFramework;
 import com.lplus.common.LplusFrameworkType;
 import com.lplus.facebook.LplusBaseDialogListener;
 import com.lplus.facebook.LplusBaseRequestListener;
 import com.lplus.facebook.LplusFacebook;
+import com.lplus.facebook.LplusFacebook.BitmapAsyncTaskListener;
 import com.lplus.facebook.R;
 
 public class LplusLoginButton extends ImageButton implements LplusButton {
 	LplusFramework mFramework;
-	LoginCompleteListener mListener;
+	LplusAnimationManager mAnimManager;
+	BitmapAsyncTaskListener mListener;
+	UserInfo mUserInfo;
+	
+	private class UserInfo {
+		String id;
+		String firstName;
+		String lastName;
+		String userName;
+		String gender;
+		String locale;
+	}
 
-	public LplusLoginButton(Context context, AttributeSet attrs, int defStyle) {
+	private LplusLoginButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
-	public LplusLoginButton(Context context, AttributeSet attrs) {
+	private LplusLoginButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
 	public LplusLoginButton(Context context) {
 		super(context);
+		setLayerType(LAYER_TYPE_HARDWARE, null);
 	}
-	
-	public void init(LplusFramework framework, LoginCompleteListener listener) {
+
+	public void init(LplusFramework framework, BitmapAsyncTaskListener listener) {
 		mFramework = framework;
 		mListener = listener;
-		
+		mUserInfo = new UserInfo();
+		mAnimManager = LplusAnimationManager.getInstance();
+
 		if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
 			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logout);
 		} else {
-			
+
 		}
-				
+
 		setOnClickListener(new LplusLoginButtonOnClickListener());
 	}
-	
+
 	private LplusFacebook getLplusFacebook() {
-		if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) 
-			return (LplusFacebook)mFramework;
+		if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK)
+			return (LplusFacebook) mFramework;
 		else
 			return null;
 	}
-	
-	public interface LoginCompleteListener {
-		public void onComplete(Bitmap pic);
-	}
-	
+
 	private final class LplusLoginButtonOnClickListener implements OnClickListener {
 		public void onClick(View arg0) {
+			LplusAnimationUtil.spin(LplusLoginButton.this);
 			
 			if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
 				LplusFacebook lplusFacebook = getLplusFacebook();
 				if (lplusFacebook.isSessionValid()) {
 					lplusFacebook.logout(new FacebookLogoutRequestListener());
-		        } else {
-		        	lplusFacebook.login((Activity)getContext(), new FacebookLoginDialogListener());	        	
-		        }
+				} else {
+					lplusFacebook.login((Activity) getContext(), new FacebookLoginDialogListener());
+				}	
 			} else {
-				
+
 			}
 		}
 	}
-	
+
 	private final class FacebookLoginDialogListener extends LplusBaseDialogListener {
 		public void onComplete(Bundle values) {
 			setBackgroundResource(R.drawable.loginbutton_facebook_bg_login);
-			
+
 			if (mListener != null) {
-				Bitmap profilePic = null;
-				
 				if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
-					LplusFacebook lplusFacebook = getLplusFacebook();		
-					profilePic = lplusFacebook.getUserProfilePic("gooson", new TestRequestListener());
-					//setImageBitmap(profilePic);
+					LplusFacebook lplusFacebook = getLplusFacebook();					
+					lplusFacebook.getUserInfo("me", new FacebookUserInfoRequestListener());
 				} else {
-					
 				}
-				
-				//mListener.onComplete(profilePic);
+			}
+		}
+		
+	    public void onError(DialogError e) {
+	    	super.onError(e);
+	    }
+	}
+
+	private final class FacebookLogoutRequestListener extends LplusBaseRequestListener {
+		public void onComplete(String response, Object state) {
+			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logout);
+			mListener.onComplete(null);
+		}
+	}
+	
+	private final class FacebookUserInfoRequestListener extends LplusBaseRequestListener {
+		public void onComplete(String response, Object state) {
+			try {				
+				JSONObject userInfo = Util.parseJson(response);
+				if (userInfo != null) {
+					mUserInfo.id = userInfo.getString("id");
+					mUserInfo.userName = userInfo.getString("username");
+					mUserInfo.gender = userInfo.getString("gender");
+					mUserInfo.locale = userInfo.getString("locale");
+					mUserInfo.firstName = userInfo.getString("first_name");
+					mUserInfo.lastName = userInfo.getString("last_name");
+					
+					
+					if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
+						LplusFacebook lplusFacebook = getLplusFacebook();		
+						lplusFacebook.getUserProfilePic(mUserInfo.userName, mListener);
+					} else {
+						
+					}
+				}
+                
+			} catch (FacebookError e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
 		}
 	}
-	
-	private class TestRequestListener extends LplusBaseRequestListener {
-		public void onComplete(String response, Object state) {
-			Bitmap profilePic = null;
-			
-		    try {
-		    	Log.e("Lplus", "onComplete try entry");
-		        // URL pictureUrl = new URL(response);
-		        // HttpURLConnection.setFollowRedirects(false);                
-		        // HttpURLConnection pictureUrlConnect = (HttpURLConnection) pictureUrl.openConnection();
 
-///		         InputStream is = pictureUrlConnect.getInputStream();
-///		         BufferedInputStream bis = new BufferedInputStream(is);
-		         
-		         profilePic = BitmapFactory.decodeByteArray(response.getBytes(), 0, response.length());
-		         
-		         Log.e("Lplus", "onComplete try end ");
-
-		    } catch (Exception e) {
-		        // TODO Auto-generated catch block
-		        e.printStackTrace();
-		        Log.e("Lplus", "onComplete " + e.toString());
-		    }
-		    
-		    mListener.onComplete(profilePic);
-		}
-	}
-		
-	
-	private final class FacebookLogoutRequestListener extends LplusBaseRequestListener {
-		public void onComplete(String response, Object state) {
-			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logout);	
-		}
-	}
 }
