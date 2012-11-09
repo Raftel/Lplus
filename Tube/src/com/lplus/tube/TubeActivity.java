@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 
-import com.lplus.facebook.LplusFacebook;
 import com.lplus.common.LplusRootView;
+import com.lplus.facebook.LplusFacebook;
 import com.lplus.widget.LplusLoginPage;
 
 

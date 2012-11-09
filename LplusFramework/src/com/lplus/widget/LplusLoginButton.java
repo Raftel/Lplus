@@ -3,22 +3,27 @@ package com.lplus.widget;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 
 import com.facebook.android.old.DialogError;
 import com.facebook.android.old.FacebookError;
 import com.facebook.android.old.Util;
-import com.lplus.animation.LplusAnimation;
 import com.lplus.animation.LplusAnimationManager;
-import com.lplus.animation.LplusAnimationProp;
 import com.lplus.animation.LplusAnimationUtil;
 import com.lplus.common.LplusFramework;
 import com.lplus.common.LplusFrameworkType;
+import com.lplus.common.LplusUtil;
 import com.lplus.facebook.LplusBaseDialogListener;
 import com.lplus.facebook.LplusBaseRequestListener;
 import com.lplus.facebook.LplusFacebook;
@@ -30,7 +35,7 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 	LplusAnimationManager mAnimManager;
 	BitmapAsyncTaskListener mListener;
 	UserInfo mUserInfo;
-	
+
 	private class UserInfo {
 		String id;
 		String firstName;
@@ -75,51 +80,58 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 			return null;
 	}
 
-	private final class LplusLoginButtonOnClickListener implements OnClickListener {
+	private final class LplusLoginButtonOnClickListener implements
+			OnClickListener {
 		public void onClick(View arg0) {
 			LplusAnimationUtil.spin(LplusLoginButton.this);
-			
-			if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
-				LplusFacebook lplusFacebook = getLplusFacebook();
-				if (lplusFacebook.isSessionValid()) {
-					lplusFacebook.logout(new FacebookLogoutRequestListener());
-				} else {
-					lplusFacebook.login((Activity) getContext(), new FacebookLoginDialogListener());
-				}	
-			} else {
 
+			if (LplusUtil.getNetworkState(getContext())) {
+				if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
+					LplusFacebook lplusFacebook = getLplusFacebook();
+					if (lplusFacebook.isSessionValid()) {
+						lplusFacebook.logout(new FacebookLogoutRequestListener());
+					} else {
+						lplusFacebook.login((Activity) getContext(), new FacebookLoginDialogListener());
+					}
+				} else {
+					// TODO : popup message
+				}
+			} else {
 			}
 		}
 	}
 
-	private final class FacebookLoginDialogListener extends LplusBaseDialogListener {
+	private final class FacebookLoginDialogListener extends
+			LplusBaseDialogListener {
 		public void onComplete(Bundle values) {
 			setBackgroundResource(R.drawable.loginbutton_facebook_bg_login);
 
 			if (mListener != null) {
 				if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
-					LplusFacebook lplusFacebook = getLplusFacebook();					
+					LplusFacebook lplusFacebook = getLplusFacebook();
 					lplusFacebook.getUserInfo("me", new FacebookUserInfoRequestListener());
 				} else {
 				}
 			}
 		}
-		
-	    public void onError(DialogError e) {
-	    	super.onError(e);
-	    }
+
+		public void onError(DialogError e) {
+			super.onError(e);
+		}
 	}
 
-	private final class FacebookLogoutRequestListener extends LplusBaseRequestListener {
+	private final class FacebookLogoutRequestListener extends
+			LplusBaseRequestListener {
 		public void onComplete(String response, Object state) {
 			setBackgroundResource(R.drawable.loginbutton_facebook_bg_logout);
 			mListener.onComplete(null);
 		}
 	}
-	
-	private final class FacebookUserInfoRequestListener extends LplusBaseRequestListener {
+
+	private final class FacebookUserInfoRequestListener extends
+			LplusBaseRequestListener {
 		public void onComplete(String response, Object state) {
-			try {				
+			try {
 				JSONObject userInfo = Util.parseJson(response);
 				if (userInfo != null) {
 					mUserInfo.id = userInfo.getString("id");
@@ -128,16 +140,15 @@ public class LplusLoginButton extends ImageButton implements LplusButton {
 					mUserInfo.locale = userInfo.getString("locale");
 					mUserInfo.firstName = userInfo.getString("first_name");
 					mUserInfo.lastName = userInfo.getString("last_name");
-					
-					
+
 					if (mFramework.getType() == LplusFrameworkType.LPLUS_TYPE_FACEBOOK) {
-						LplusFacebook lplusFacebook = getLplusFacebook();		
+						LplusFacebook lplusFacebook = getLplusFacebook();
 						lplusFacebook.getUserProfilePic(mUserInfo.userName, mListener);
 					} else {
-						
+
 					}
 				}
-                
+
 			} catch (FacebookError e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

@@ -4,15 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -24,7 +27,7 @@ import com.lplus.facebook.LplusFacebook.BitmapAsyncTaskListener;
 import com.lplus.facebook.R;
 
 
-public class LplusLoginPage extends LinearLayout implements LplusPage {
+public class LplusLoginPage extends LinearLayout implements LplusPage, OnClickListener {
 	
 	private static final int BUTTON_WIDTH_DIP = 56;
 	private static final int BUTTON_HEIGHT_DIP = 56;
@@ -34,6 +37,7 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 	
 	
 	ImageView					mProfile;
+	ImageView					mBg;
 	LinearLayout				mLayout;
 	LplusButtonGroup			mLoginButtonGroup;
 	TableRow					mTableRow[];
@@ -51,10 +55,15 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 
 	public LplusLoginPage(Context context) {
 		super(context);
+		this.setOnClickListener(this);
 	}
 	
 	public void init(int numButtons) {
-		this.setBackgroundResource(R.drawable.loginpage_bg_yellow);
+		//this.setBackgroundResource(R.drawable.loginpage_bg_yellow);
+		mBg = new ImageView(getContext());
+		mBg.layout(0, 0, 400, 400);
+		mBg.setImageResource(R.drawable.loginpage_bg_yellow);
+		this.addView(mBg);
 
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mLayout = (LinearLayout) inflater.inflate(R.layout.lplusloginpage, null);
@@ -76,7 +85,8 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 		mLoginBtnListener = new LoginButtonListener[mNumButtons];
 		mMaskBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.loginpage_profile_mask);
 		mDefaultProfile = BitmapFactory.decodeResource(getResources(),R.drawable.loginpage_default_profile);
-		setProfilePic(mDefaultProfile);
+		mProfile.setImageBitmap(mDefaultProfile);
+		//setProfilePic(mDefaultProfile);
 	}
 	
 	public void addLoginButton(LplusFramework framework) {
@@ -141,5 +151,22 @@ public class LplusLoginPage extends LinearLayout implements LplusPage {
 			LplusAnimationUtil.spin(mProfile);
 			setProfilePic(pic);
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		float vertexArray[] = { 
+				-100.0f,     0.0f, 
+				0.0f,  100, 
+				100, 100, 
+				100, 	  
+			};
+		
+		Matrix mat = new Matrix();
+		mat.mapPoints(vertexArray);
+		//mat.postSkew(0.5f, 0.0f);
+		
+		mBg.setScaleType(ScaleType.MATRIX);
+		mBg.setImageMatrix(mat);
 	}
 }
