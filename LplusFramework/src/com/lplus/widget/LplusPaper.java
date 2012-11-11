@@ -44,7 +44,7 @@ public class LplusPaper extends FrameLayout implements LplusWidget,
 				mBg2 = new ImageView(getContext());
 				mBg2.setTranslationY(LplusPaper.this.getHeight()/2);
 				mBg2.setImageBitmap(lowwerBitmap);
-				//LplusPaper.this.addView(mBg2, lp2);
+				LplusPaper.this.addView(mBg2, lp2);
 
 			}
 		});
@@ -58,15 +58,23 @@ public class LplusPaper extends FrameLayout implements LplusWidget,
 		float scaleFactor = Math.abs(90.0f - angle) / 90;
 		mBg1.setRotationX(-angle);
 		//mBg1.setScaleY(scaleFactor);
-		mBg1.setTranslationY((float) (mBg1OriginY + (mBg1.getHeight() - Math.cos(-angle) * mBg1.getHeight() /2)));
-		Log.e("gooson", "y : " + mBg1.getY() + "// scale :" + (Math.cos(angle) * mBg1.getHeight() /2));
+		float bg1TransY = (mBg1.getY() + -dir * ((10.0f / 90) * mBg1.getHeight()) / 2);
+		mBg1.setTranslationY(bg1TransY);
 
 		mBg2.setRotationX(angle);
-		mBg2.setScaleY(scaleFactor);
-		mBg2.setTranslationY(mBg2.getY() + -dir * ((10.0f / 90) * mBg2.getHeight()) / 2);
+		//mBg2.setScaleY(scaleFactor);
+		mBg2.setTranslationY(mBg2.getY() + -dir * (((10.0f / 90) * mBg2.getHeight()) / 2));
+		mBg2.setTranslationY(mBg2.getY() - (mBg2.getHeight() - (mBg1.getHeight() * scaleFactor)));
 
+		Log.e("gooson", "diff : 1(" + (mBg1.getHeight() * scaleFactor)  + ") - 2(" + mBg2.getY() + ") = (" + ((mBg1.getHeight() * scaleFactor) - mBg2.getY()) + ")");
+		
 		angle += dir * 10.0f;
-		if (angle % 90.0f == 0.0f)
+		if (angle > 90.0f) {
 			dir *= -1.0f;
+			angle = 90.0f;
+		} else if (angle < 0.0f) {
+			dir *= -1.0f;
+			angle = 0.0f;
+		}
 	}
 }
