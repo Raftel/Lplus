@@ -1,5 +1,6 @@
 package com.lplus.tube;
 
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.Menu;
 import com.lplus.common.LplusRootView;
 import com.lplus.facebook.LplusFacebook;
 import com.lplus.widget.LplusLoginPage;
+import com.lplus.widget.LplusPaper;
 
 
 
@@ -15,6 +17,9 @@ public class TubeActivity extends Activity {
 	LplusFacebook facebook;
 	LplusRootView rootView;
 	LplusLoginPage loginPage;
+	
+	// for test
+	LplusPaper mPaper;
 
 	public static final String APPID = "338804906187760";
 	String[] permissions = new String[] {
@@ -76,15 +81,18 @@ public class TubeActivity extends Activity {
         facebook = new LplusFacebook(APPID, permissions);
         rootView = new LplusRootView(this);
       
-        int numButtons = 1;
+        /*int numButtons = 1;
         loginPage = new LplusLoginPage(this);        
         loginPage.init(numButtons);
         for (int i = 0; i < numButtons; i++) {
         	loginPage.addLoginButton(facebook);
         }
         
-        rootView.addView(loginPage);
-        setContentView(rootView);
+        rootView.addView(loginPage);*/
+        
+        mPaper = new LplusPaper(this);
+        rootView.addView(mPaper);
+        setContentView(rootView);       
     }
 
     @Override
