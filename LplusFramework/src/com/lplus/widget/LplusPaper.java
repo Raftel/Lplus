@@ -1,5 +1,7 @@
 package com.lplus.widget;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,21 +11,37 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.lplus.animation.LplusAnimation;
+import com.lplus.animation.LplusAnimationManager;
+import com.lplus.animation.LplusAnimationProp;
 import com.lplus.facebook.R;
 
 public class LplusPaper extends FrameLayout implements LplusWidget,
 		OnClickListener {
 
-	ImageView mBg1;
-	ImageView mBg2;
-	ImageView mBg3;
-	ImageView mBg4;
+	private static final int CONTENTS_NUM = 4;
 	
-	float mBg1OriginY;
-	float mBg2OriginY;
-	float mBg3OriginY;
-	float mBg4OriginY;
+	double mCurrentAngle = 0.0f;
 	
+	ArrayList<FoldView> mContents;
+//	ImageView mBg1;
+//	ImageView mBg2;
+//	ImageView mBg3;
+//	ImageView mBg4;
+	
+//	float mBg1OriginY;
+//	float mBg2OriginY;
+//	float mBg3OriginY;
+//	float mBg4OriginY;
+	
+	private class FoldView extends ImageView{
+		public float mOrigin;
+		
+		public FoldView(Context context) {		
+			super(context);
+			mOrigin = 0;
+		}	
+	}	
 
 	public LplusPaper(Context context) {
 		super(context);
@@ -36,86 +54,68 @@ public class LplusPaper extends FrameLayout implements LplusWidget,
 			public void run() {
 
 				Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
-				Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				Bitmap bitmap2 = Bitmap.createBitmap(bitmap, 0, LplusPaper.this.getHeight()* 1/4, LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				Bitmap bitmap3 = Bitmap.createBitmap(bitmap, 0, LplusPaper.this.getHeight()* 2/4, LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				Bitmap bitmap4 = Bitmap.createBitmap(bitmap, 0, LplusPaper.this.getHeight()* 3/4, LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
 				
+				mContents = new ArrayList<FoldView>();
+								
 				LplusPaper.this.setLayoutParams(new LayoutParams(getRootView().getWidth(), getRootView().getHeight()));
-				
-				LayoutParams lp1 = new LayoutParams(LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				mBg1 = new ImageView(getContext());
-				mBg1.setImageBitmap(bitmap1);
-				LplusPaper.this.addView(mBg1, lp1);
-				mBg1OriginY = mBg1.getY();
-
-				LayoutParams lp2 = new LayoutParams(LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				mBg2 = new ImageView(getContext());
-				mBg2.setTranslationY(LplusPaper.this.getHeight() * 1/4);
-				mBg2.setImageBitmap(bitmap2);
-				LplusPaper.this.addView(mBg2, lp2);
-				mBg2OriginY = mBg2.getY();
-				
-				LayoutParams lp3 = new LayoutParams(LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				mBg3 = new ImageView(getContext());
-				mBg3.setTranslationY(LplusPaper.this.getHeight() * 2/4);
-				mBg3.setImageBitmap(bitmap3);
-				LplusPaper.this.addView(mBg3, lp3);
-				mBg3OriginY = mBg3.getY();
-				
-				LayoutParams lp4 = new LayoutParams(LplusPaper.this.getWidth(), LplusPaper.this.getHeight()/4);
-				mBg4 = new ImageView(getContext());
-				mBg4.setTranslationY(LplusPaper.this.getHeight() * 3/4);
-				mBg4.setImageBitmap(bitmap4);
-				LplusPaper.this.addView(mBg4, lp4);
-				mBg4OriginY = mBg4.getY();
-
+			
+				for (int i = 0; i < CONTENTS_NUM; i++) {
+					FoldView view = new FoldView(getContext());
+					
+					LayoutParams lp = new LayoutParams(LplusPaper.this.getWidth(), LplusPaper.this.getHeight() / CONTENTS_NUM);
+					LplusPaper.this.addView(view, lp);
+					
+					view.setTranslationY(LplusPaper.this.getHeight() * i / CONTENTS_NUM);
+					view.mOrigin = view.getY();
+					
+					Bitmap viewBg = Bitmap.createBitmap(bitmap, 0, LplusPaper.this.getHeight() * i / CONTENTS_NUM, LplusPaper.this.getWidth(), LplusPaper.this.getHeight() / CONTENTS_NUM);
+					view.setImageBitmap(viewBg);
+					
+					mContents.add(view);
+				}
 			}
 		});
 
 	}
-
-	static float angle = 0.0f;
+	
+	private void layout() {
+		
+	}
+	
 	static float dir = 1.0f;
-
-	public void onClick(View v) {
-		float scaleFactor = Math.abs(90.0f - angle) / 90;
-		double radian = angle / 180 * Math.PI;
-				 
-		float height = (float) (Math.cos(radian) * (mBg1.getHeight() / 2));
-		float diffHeight1 = mBg1.getHeight()/2 - height;
-
-		mBg1.setRotationX(angle);
-		mBg1.setTranslationY(mBg1OriginY - diffHeight1);
+	
+	private void foldAnimation() {
 		
-		height = (float) (Math.cos(radian) * (mBg2.getHeight() / 2));
-		float diffHeight2 = mBg2.getHeight()/2 - height;
+		LplusAnimationManager animManager = LplusAnimationManager.getInstance();
+		LplusAnimation anim = animManager.createAnimation(0, 5000, LplusAnimation.FUNC_EASE_OUT);
 		
-		mBg2.setRotationX(-angle);
-		mBg2.setTranslationY(mBg2OriginY - diffHeight2 - diffHeight1 * 2);
+		float direction = 1.0f;
+		float prevDiff = 0.0f;
 		
-		height = (float) (Math.cos(radian) * (mBg3.getHeight() / 2));
-		float diffHeight3 = mBg3.getHeight()/2 - height;
+		for (int i = 0; i < CONTENTS_NUM; i++) {
+			FoldView view = mContents.get(i);
 		
-		mBg3.setRotationX(angle);
-		mBg3.setTranslationY(mBg3OriginY - diffHeight3 - diffHeight2 * 2 - diffHeight1 * 2);
-		
-		height = (float) (Math.cos(radian) * (mBg4.getHeight() / 2));
-		float diffHeight4 = mBg4.getHeight()/2 - height;
-		
-		mBg4.setRotationX(-angle);
-		mBg4.setTranslationY(mBg4OriginY - diffHeight4 - diffHeight3 * 2 - diffHeight2 * 2 - diffHeight1 * 2);
-
-		//Log.e("gooson", "diff " + (mBg1.getHeight() - diffHeight1 * 2) + " / " + (mBg2OriginY - diffHeight2 - diffHeight1 * 2));
-		Log.e("gooson", "diff " + mBg1.getY());
-		
-		angle += dir * 10.0f;
-		if (angle > 90.0f) {
-			dir *= -1.0f;
-			angle = 90.0f;
-		} else if (angle < 0.0f) {
-			dir *= -1.0f;
-			angle = 0.0f;
+			double radian =  Math.PI * 90.0f / 180.0f;
+			double newHeight = Math.cos(radian) * ((double)view.getHeight() / (double)2.0f);
+			float diff = (float) ((double)view.getHeight() / (double)2.0f - newHeight);		
+	
+			if (dir == 1.0f) {
+				anim.addProperty(new LplusAnimationProp(LplusAnimationProp.PROP_ROTATE_X, view, 0, 90 * direction));
+				anim.addProperty(new LplusAnimationProp(LplusAnimationProp.PROP_TRANSLATE_Y, view, view.getTranslationY(), view.mOrigin - diff - prevDiff * 2));
+			} else { 
+				anim.addProperty(new LplusAnimationProp(LplusAnimationProp.PROP_ROTATE_X, view, 90 * direction, 0));
+				anim.addProperty(new LplusAnimationProp(LplusAnimationProp.PROP_TRANSLATE_Y, view, view.getTranslationY(), view.mOrigin));
+			}			
+			
+			prevDiff += diff;
+			direction *= -1.0f;
 		}
+		anim.start();		
+		
+		dir *= -1.0f;
+	}
+
+	public void onClick(View v) {		
+		foldAnimation();
 	}
 }
