@@ -2,10 +2,6 @@ package com.lplus.graphics;
 
 public class LplusShaderStr {
 
-    public LplusShaderStr() {
-	// TODO Auto-generated constructor stub
-    }
-
     public final static String strVertexShaderDefault =
 	        "uniform mat4 uMVPMatrix;" +
 	        "attribute vec4 aPosition;" +
@@ -18,13 +14,11 @@ public class LplusShaderStr {
     
 
     public final static String strFragmentShaderDefault = 
-	    	    "precision mediump float;" + 
+	    	"precision mediump float;" + 
 		    "uniform sampler2D sTexture;" +
 		    "uniform vec4 uColor;" + 
 		    "varying vec2 vTextureCoord;" + 
 		    "void main() {" + 
 		    "  gl_FragColor = texture2D(sTexture, vTextureCoord) * uColor;" + 
 		    "}";
-    
-    
 }

@@ -5,8 +5,8 @@ import android.opengl.GLSurfaceView;
 
 public class LplusSurfaceGLES extends GLSurfaceView {
 
-    public LplusSurfaceGLES(Context context) {
-	super(context);
-	setEGLContextClientVersion(2);
-    }
+	public LplusSurfaceGLES(Context context) {
+		super(context);
+		setEGLContextClientVersion(2);
+	}
 }

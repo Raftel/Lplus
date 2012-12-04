@@ -28,18 +28,15 @@ public class LplusSphereMesh extends LplusMesh {
 				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 1] = (float) (mRadius * Math.sin(dpi * i - Math.PI / 2));
 				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 2] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
 
-				vertexArray[SHADER_FORMAT* (i * nVertex + j) + 3] = d * j;
+				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 3] = d * j;
 				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 4] = d * i;
 				
 //				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 3] = (float) (Math.cos(dpi * i - Math.PI / 2) * Math.sin(dth * j - Math.PI));
 //				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 4] = (float) Math.sin(dpi * i - Math.PI / 2);
 //				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 5] = (float) (Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
-
+//
 //				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 6] = d * j;
 //				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 7] = d * i;
-				
-				
-
 			}
 		}
 		
