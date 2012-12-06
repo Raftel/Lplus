@@ -129,21 +129,21 @@ public class LplusContextGLES implements Renderer {
 			LplusMaterial.doReservedTexLoading();
 		}
 
-		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GLES20.glClearColor(0.0f, 0.5f, 0.0f, 1.0f);
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+		LplusUtil.checkError("LplusContext", "OnDrawFrame", "0");
+		
 		mShader.useProgram();
 
-		if (GLES20.glGetError() != GLES20.GL_NO_ERROR)
-			Log.e("SCGContext", "gl error - " + GLUtils.getEGLErrorString(GLES20.glGetError()));
+		LplusUtil.checkError("LplusContext", "OnDrawFrame", "1");
 
 		ArrayList<LplusNode> renderNodeList = mScene.getRenderNodeList();
 		for (int i = 0; i < renderNodeList.size(); i++) {
 			renderModel(renderNodeList.get(i));
 		}
 
-		if (GLES20.glGetError() != GLES20.GL_NO_ERROR)
-			Log.e("SCGContext", "gl error - " + GLUtils.getEGLErrorString(GLES20.glGetError()));
+		LplusUtil.checkError("LplusContext", "OnDrawFrame", "2");
 
 		mShader.unuseProgram();
 
@@ -162,7 +162,7 @@ public class LplusContextGLES implements Renderer {
 		initialize();
 
 		// check only one shader
-		mShader = new LplusShader(LplusShaderStr.strVertexShaderDefault, LplusShaderStr.strFragmentShaderDefault);
+		mShader = new LplusShader(LplusShaderStr.strVertexShader, LplusShaderStr.strFragmentShader);
 
 		if (mCallback != null)
 			mCallback.onSurfaceCreated();
@@ -218,6 +218,27 @@ public class LplusContextGLES implements Renderer {
 				final LplusMaterial material = model.getMaterial();
 
 				if (mesh != null) {
+					
+					float width = 720.0f;
+					float height = 1280.0f;
+					float[] mat = new float[16];
+					//Matrix.translateM(mat, 0, -width * 0.5f, -height * 0.5f, -height);
+					Matrix.translateM(mat, 0, 0.0f, 0.0f, 0.0f);
+					
+					float zeroVec[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+					float pos[] = new float[3];
+					float result[] = new float[4];
+					
+					Matrix.multiplyMV(result, 0, mat, 0, zeroVec, 0);
+					
+					pos[0] = result[0];
+					pos[1] = result[1];
+					pos[2] = result[2];
+					
+					mShader.updateCamera(pos[0], pos[1], pos[2]);
+					
+					mShader.updateLight(mScene.getLightList());
+					
 					mShader.updateMatrix(model.getModelMatrix(), mVPMatrix);
 					if (mPrevMesh != mesh) {
 						mShader.updateMesh(mesh);

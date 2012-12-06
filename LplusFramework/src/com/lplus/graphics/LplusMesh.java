@@ -19,8 +19,8 @@ public class LplusMesh {
 		mVertexBuffer = null;
 		mIndexBuffer = null;
 
-		// P3T2 Type
-		mVertexStride = 5;
+		// P3N3T2 Type
+		mVertexStride = 8;
 	}
 
 	public void setVertexArray(float[] array, int vertexCount) {

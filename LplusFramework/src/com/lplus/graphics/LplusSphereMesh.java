@@ -2,8 +2,6 @@ package com.lplus.graphics;
 
 public class LplusSphereMesh extends LplusMesh {
 
-	private static int SHADER_FORMAT = 5;
-	
 	private float mRadius;
 	private int mSplit;
 
@@ -15,8 +13,9 @@ public class LplusSphereMesh extends LplusMesh {
 		mRadius = radius;
 		mSplit = split;
 		
+		int stride = getVertexStride();
 		int nVertex = mSplit + 1;
-		float vertexArray[] = new float[SHADER_FORMAT * nVertex * nVertex];
+		float vertexArray[] = new float[stride * nVertex * nVertex];
 
 		float d = 1.0f / mSplit;
 		float dth = (float) (2 * Math.PI / mSplit);
@@ -24,19 +23,16 @@ public class LplusSphereMesh extends LplusMesh {
 
 		for (int i = 0; i < nVertex; i++) {
 			for (int j = 0; j < nVertex; j++) {
-				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 0] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.sin(dth * j - Math.PI));
-				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 1] = (float) (mRadius * Math.sin(dpi * i - Math.PI / 2));
-				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 2] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
-
-				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 3] = d * j;
-				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 4] = d * i;
+				vertexArray[stride * (i * nVertex + j) + 0] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.sin(dth * j - Math.PI));
+				vertexArray[stride * (i * nVertex + j) + 1] = (float) (mRadius * Math.sin(dpi * i - Math.PI / 2));
+				vertexArray[stride * (i * nVertex + j) + 2] = (float) (mRadius * Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
 				
-//				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 3] = (float) (Math.cos(dpi * i - Math.PI / 2) * Math.sin(dth * j - Math.PI));
-//				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 4] = (float) Math.sin(dpi * i - Math.PI / 2);
-//				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 5] = (float) (Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
-//
-//				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 6] = d * j;
-//				vertexArray[SHADER_FORMAT * (i * nVertex + j) + 7] = d * i;
+				vertexArray[stride * (i * nVertex + j) + 3] = (float) (Math.cos(dpi * i - Math.PI / 2) * Math.sin(dth * j - Math.PI));
+				vertexArray[stride * (i * nVertex + j) + 4] = (float) (Math.sin(dpi * i - Math.PI / 2));
+				vertexArray[stride * (i * nVertex + j) + 5] = (float) (Math.cos(dpi * i - Math.PI / 2) * Math.cos(dth * j - Math.PI));
+
+				vertexArray[stride * (i * nVertex + j) + 6] = d * j;
+				vertexArray[stride * (i * nVertex + j) + 7] = d * i;
 			}
 		}
 		
@@ -44,10 +40,8 @@ public class LplusSphereMesh extends LplusMesh {
 		
 		short indexArray[] = new short[6 * mSplit * mSplit];
 
-		for( int i=0; i< mSplit; i++ )
-		{
-			for( int j=0; j < mSplit; j++ )
-			{
+		for (int i = 0; i < mSplit; i++) {
+			for (int j = 0; j < mSplit; j++) {
 				short v0 = (short) (i * (mSplit + 1) + j);
 				short v1 = (short) (i * (mSplit + 1) + (j + 1));
 				short v2 = (short) ((i + 1) * (mSplit + 1) + j);
