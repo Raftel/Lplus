@@ -14,12 +14,12 @@ public class LplusShaderStr {
     
 
     public final static String strFragmentShaderDefault = 
-	    	"precision mediump float;" + 
+	    	"precision mediump float;" +
 		    "uniform sampler2D sTexture;" +
-		    "uniform vec4 uColor;" + 
-		    "varying vec2 vTextureCoord;" + 
-		    "void main() {" + 
-		    "  gl_FragColor = texture2D(sTexture, vTextureCoord) * uColor;" + 
+		    "uniform vec4 uColor;" +
+		    "varying vec2 vTextureCoord;" +
+		    "void main() {" +
+		    "  gl_FragColor = texture2D(sTexture, vTextureCoord) * uColor;" +
 		    "}";
     
     public final static String strVertexShader =

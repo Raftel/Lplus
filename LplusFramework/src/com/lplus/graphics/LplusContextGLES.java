@@ -133,7 +133,7 @@ public class LplusContextGLES implements Renderer {
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
 		LplusUtil.checkError("LplusContext", "OnDrawFrame", "0");
-		
+
 		mShader.useProgram();
 
 		LplusUtil.checkError("LplusContext", "OnDrawFrame", "1");
@@ -218,32 +218,29 @@ public class LplusContextGLES implements Renderer {
 				final LplusMaterial material = model.getMaterial();
 
 				if (mesh != null) {
-					
-					float width = 720.0f;
-					float height = 1280.0f;
-					float[] mat = new float[16];
-					//Matrix.translateM(mat, 0, -width * 0.5f, -height * 0.5f, -height);
-					Matrix.translateM(mat, 0, 0.0f, 0.0f, 0.0f);
-					
-					float zeroVec[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-					float pos[] = new float[3];
-					float result[] = new float[4];
-					
-					Matrix.multiplyMV(result, 0, mat, 0, zeroVec, 0);
-					
-					pos[0] = result[0];
-					pos[1] = result[1];
-					pos[2] = result[2];
-					
-					mShader.updateCamera(pos[0], pos[1], pos[2]);
-					
-					mShader.updateLight(mScene.getLightList());
-					
-					mShader.updateMatrix(model.getModelMatrix(), mVPMatrix);
+
+					LplusCamera camera = mScene.getCamera();
+										
+					if (camera != null) {
+						float[] cameraViewMat = camera.getViewMatrix();
+						float[] cameraProjMat = camera.getProjectionMatrix();
+						
+						float[] cameraPos = camera.getPosition();						
+						
+						mShader.updateCamera(cameraPos[0], cameraPos[1], cameraPos[2]);					
+						
+						mShader.updateMatrix(model.getModelMatrix(), cameraViewMat, cameraProjMat);
+					} else {
+						mShader.updateMatrix(model.getModelMatrix(), mVPMatrix);
+					}
+										
+					mShader.updateLight(mScene.getLightList());					
+
 					if (mPrevMesh != mesh) {
 						mShader.updateMesh(mesh);
 						mPrevMesh = mesh;
 					}
+
 					if (USING_TEXTURE_ATLAS) {
 						if (material != null && material.getPendingTexture() != null && !material.getPendingTexture().isRecycled()) {
 							SCGAtlasTexture tex = mAtlasManager.createTexture(material.getPendingTexture(), true);

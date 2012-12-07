@@ -191,11 +191,14 @@ public class LplusShader {
 		LplusUtil.checkError("LplusShader", "updateCamera", "");
 	}
 
-	public void updateMatrix(float[] mMatrix, float[] vpMatrix) {
+	public void updateMatrix(float[] mMatrix, float[] vMatrix, float[] pMatrix) {
+		float[] mvMatrix = new float[16];
 		float[] mvpMatrix = new float[16];
-		Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mMatrix, 0);
+		
+		Matrix.multiplyMM(mvMatrix, 0, vMatrix, 0, mMatrix, 0);
+		Matrix.multiplyMM(mvpMatrix, 0, pMatrix, 0, mvMatrix, 0);
 
-		updateMatrix(mvpMatrix);
+		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 		
 		GLES20.glUniformMatrix4fv(mModelMatrixHandle, 1, false, mMatrix, 0);
 		
@@ -203,8 +206,17 @@ public class LplusShader {
 		
 		LplusUtil.checkError("LplusShader", "updateMatrix", "");
 	}
+	
+	public void updateMatrix(float[] mMatrix, float[] vpMatrix) {
+		float[] mvpMatrix = new float[16];
+		Matrix.multiplyMM(mvpMatrix, 0, vpMatrix, 0, mMatrix, 0);
 
-	public void updateMatrix(float[] mvpMatrix) {
 		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+		
+		GLES20.glUniformMatrix4fv(mModelMatrixHandle, 1, false, mMatrix, 0);
+		
+		GLES20.glUniformMatrix4fv(mNormalMatrixHandle, 1, false, LplusUtil.calcNormalMatrix(mMatrix), 0);
+		
+		LplusUtil.checkError("LplusShader", "updateMatrix", "");
 	}
 }

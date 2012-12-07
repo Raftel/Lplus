@@ -14,6 +14,9 @@ public class LplusNode {
 	
 	private boolean mModelMatrixDirty;
 	private float[] mModelMatrix = new float[16];
+	
+	private boolean mViewMatrixDirty;
+	private float[] mViewMatrix = new float[16];
 
 	private boolean mVisible;
 	private boolean mPickable;
@@ -33,6 +36,9 @@ public class LplusNode {
 	public LplusNode() {
 		Matrix.setIdentityM(mModelMatrix, 0);
 		mModelMatrixDirty = false;
+		
+		Matrix.setIdentityM(mViewMatrix, 0);
+		mViewMatrixDirty = false;
 
 		mTVector[0] = 0.0f;
 		mTVector[1] = 0.0f;
@@ -232,12 +238,12 @@ public class LplusNode {
 				node.setMatrixDirty();
 		}
 		mModelMatrixDirty = true;
+		mViewMatrixDirty = true;
 	}
 
 	public float[] getModelMatrix() {
 		if (mModelMatrixDirty) {
 			if (mParent != null)
-				// mModelMatrix = mParent.getModelMatrix();
 				System.arraycopy(mParent.getModelMatrix(), 0, mModelMatrix, 0, mModelMatrix.length);
 			else
 				Matrix.setIdentityM(mModelMatrix, 0);
@@ -258,6 +264,32 @@ public class LplusNode {
 		}
 
 		return mModelMatrix;
+	}
+	
+	public float[] getViewMatrix() {
+		if (mViewMatrixDirty) {
+			
+			Matrix.setIdentityM(mViewMatrix, 0);
+			
+			if (mRVector[0] != 0.0f)
+				Matrix.rotateM(mViewMatrix, 0, mViewMatrix, 0, mRVector[0], 1, 0, 0);
+			if (mRVector[1] != 0.0f)
+				Matrix.rotateM(mViewMatrix, 0, mViewMatrix, 0, mRVector[1], 0, 1, 0);
+			if (mRVector[2] != 0.0f)
+				Matrix.rotateM(mViewMatrix, 0, mViewMatrix, 0, mRVector[2], 0, 0, 1);
+			
+			Matrix.translateM(mViewMatrix, 0, mViewMatrix, 0, mTVector[0], mTVector[1], mTVector[2]);
+			
+			if (mParent != null) {
+				float[] parentModelMatrix = new float[16];
+				System.arraycopy(mParent.getModelMatrix(), 0, parentModelMatrix, 0, parentModelMatrix.length);
+				Matrix.multiplyMM(mModelMatrix, 0, mModelMatrix, 0, parentModelMatrix, 0);
+			}
+
+			mViewMatrixDirty = false;
+		}
+
+		return mViewMatrix;
 	}
 
 	public boolean isVisible() {
